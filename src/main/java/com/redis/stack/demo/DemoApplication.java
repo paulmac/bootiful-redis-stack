@@ -8,6 +8,15 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springdoc.core.models.GroupedOpenApi;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.geo.Point;
+
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -23,34 +32,27 @@ import com.redis.stack.demo.repositories.hashes.UserRepository;
 import com.redis.stack.demo.repositories.json.CharacterEntryRepository;
 import com.redis.stack.demo.repositories.json.FictionalCharacterRepository;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.geo.Point;
-
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+// import springfox.documentation.builders.PathSelectors;
+// import springfox.documentation.builders.RequestHandlerSelectors;
+// import springfox.documentation.spi.DocumentationType;
+// import springfox.documentation.spring.web.plugins.Docket;
+// import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
-@EnableSwagger2
-@EnableRedisEnhancedRepositories(basePackages = {"com.redis.stack.demo.repositories.hashes","com.redis.stack.demo.models.hashes"})
-@EnableRedisDocumentRepositories(basePackages = {"com.redis.stack.demo.repositories.json","com.redis.stack.demo.models.json"})
+@EnableRedisEnhancedRepositories(basePackages = { "com.redis.stack.demo.repositories.hashes",
+    "com.redis.stack.demo.models.hashes" })
+@EnableRedisDocumentRepositories(basePackages = { "com.redis.stack.demo.repositories.json",
+    "com.redis.stack.demo.models.json" })
 public class DemoApplication {
 
   private static final Log logger = LogFactory.getLog(DemoApplication.class);
 
   @Bean
   CommandLineRunner loadTestData( //
-    RoleRepository roleRepository, //
-    UserRepository userRepository, //
-    FictionalCharacterRepository fcRepository, //
-    CharacterEntryRepository ceRepository //
+      RoleRepository roleRepository, //
+      UserRepository userRepository, //
+      FictionalCharacterRepository fcRepository, //
+      CharacterEntryRepository ceRepository //
   ) {
     logger.info("🚀 Loading test data...");
     return args -> {
@@ -74,7 +76,8 @@ public class DemoApplication {
         Random rand = new Random();
         try {
           reader = Files.newBufferedReader(Paths.get("src/main/resources/data/users/users.json"));
-          List<User> users = new Gson().fromJson(reader, new TypeToken<List<User>>() {}.getType());
+          List<User> users = new Gson().fromJson(reader, new TypeToken<List<User>>() {
+          }.getType());
 
           users.stream().forEach((user) -> {
             user.getRoles().add(roles.get(rand.nextInt(roles.size())));
@@ -103,7 +106,7 @@ public class DemoApplication {
         Address thorsAddress = Address.of("248", "Seven Mile Beach Rd", "Broken Head", "NSW", "2481", "Australia");
 
         // 11 Commerce Dr, Riverhead, NY 11901
-        Address ironmansAddress = Address.of("11", "Commerce Dr", "Riverhead", "NY",  "11901", "US");
+        Address ironmansAddress = Address.of("11", "Commerce Dr", "Riverhead", "NY", "11901", "US");
 
         // 605 W 48th St, New York, NY 10019
         Address blackWidowAddress = Address.of("605", "48th St", "New York", "NY", "10019", "US");
@@ -117,12 +120,19 @@ public class DemoApplication {
         // 11461 Sunset Blvd, Los Angeles, CA 90049
         Address nickFuryAddress = Address.of("11461", "Sunset Blvd", "Los Angeles", "CA", "90049", "US");
 
-        FictionalCharacter thor = FictionalCharacter.of("Chris", "Hemsworth", 38, thorSays, new Point(153.616667, -28.716667), thorsAddress, Set.of("hammer", "biceps", "hair", "heart"));
-        FictionalCharacter ironman = FictionalCharacter.of("Robert", "Downey", 56, ironmanSays, new Point(40.9190747, -72.5371874), ironmansAddress, Set.of("tech", "money", "one-liners", "intelligence", "resources"));
-        FictionalCharacter blackWidow = FictionalCharacter.of("Scarlett", "Johansson", 37, blackWidowSays, new Point(40.7215259, -74.0129994), blackWidowAddress, Set.of("deception", "martial_arts"));
-        FictionalCharacter wandaMaximoff = FictionalCharacter.of("Elizabeth", "Olsen", 32, wandaMaximoffSays, new Point(40.6976701, -74.2598641), wandaMaximoffsAddress, Set.of("magic", "loyalty"));
-        FictionalCharacter gamora = FictionalCharacter.of("Zoe", "Saldana", 43, gamoraSays, new Point(-118.399968, 34.073087), gamorasAddress, Set.of("skills", "martial_arts"));
-        FictionalCharacter nickFury = FictionalCharacter.of("Samuel L.", "Jackson", 73, nickFurySays, new Point(-118.4345534, 34.082615), nickFuryAddress, Set.of("planning", "deception", "resources"));
+        FictionalCharacter thor = FictionalCharacter.of("Chris", "Hemsworth", 38, thorSays,
+            new Point(153.616667, -28.716667), thorsAddress, Set.of("hammer", "biceps", "hair", "heart"));
+        FictionalCharacter ironman = FictionalCharacter.of("Robert", "Downey", 56, ironmanSays,
+            new Point(40.9190747, -72.5371874), ironmansAddress,
+            Set.of("tech", "money", "one-liners", "intelligence", "resources"));
+        FictionalCharacter blackWidow = FictionalCharacter.of("Scarlett", "Johansson", 37, blackWidowSays,
+            new Point(40.7215259, -74.0129994), blackWidowAddress, Set.of("deception", "martial_arts"));
+        FictionalCharacter wandaMaximoff = FictionalCharacter.of("Elizabeth", "Olsen", 32, wandaMaximoffSays,
+            new Point(40.6976701, -74.2598641), wandaMaximoffsAddress, Set.of("magic", "loyalty"));
+        FictionalCharacter gamora = FictionalCharacter.of("Zoe", "Saldana", 43, gamoraSays,
+            new Point(-118.399968, 34.073087), gamorasAddress, Set.of("skills", "martial_arts"));
+        FictionalCharacter nickFury = FictionalCharacter.of("Samuel L.", "Jackson", 73, nickFurySays,
+            new Point(-118.4345534, 34.082615), nickFuryAddress, Set.of("planning", "deception", "resources"));
 
         fcRepository.saveAll(List.of(thor, ironman, blackWidow, wandaMaximoff, gamora, nickFury));
         logger.info(String.format("✅ Created %s Fictional Characters...", fcRepository.count()));
@@ -135,7 +145,8 @@ public class DemoApplication {
         Reader reader = null;
         try {
           reader = Files.newBufferedReader(Paths.get("src/main/resources/data/marvel-wikia-data.json"));
-          List<CharacterEntry> characterEntries = new Gson().fromJson(reader, new TypeToken<List<CharacterEntry>>() {}.getType());
+          List<CharacterEntry> characterEntries = new Gson().fromJson(reader, new TypeToken<List<CharacterEntry>>() {
+          }.getType());
 
           characterEntries.stream().forEach((ce) -> {
             ce.setType(ce.getId());
@@ -179,13 +190,20 @@ public class DemoApplication {
     SpringApplication.run(DemoApplication.class, args);
   }
 
+  // @Bean
+  // public Docket api() {
+  // return new Docket(DocumentationType.SWAGGER_2)
+  // .select()
+  // .apis(RequestHandlerSelectors.any())
+  // .paths(PathSelectors.any())
+  // .build();
+  // }
+
   @Bean
-  public Docket api() {
-    return new Docket(DocumentationType.SWAGGER_2)
-        .select()
-        .apis(RequestHandlerSelectors.any())
-        .paths(PathSelectors.any())
+  public GroupedOpenApi httpApi() {
+    return GroupedOpenApi.builder()
+        .group("http")
+        .pathsToMatch("/**")
         .build();
   }
-
 }

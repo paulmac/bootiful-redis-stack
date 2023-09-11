@@ -10,6 +10,6 @@ import io.redisearch.Suggestion;
 
 public interface CharacterEntryRepository extends RedisDocumentRepository<CharacterEntry, String> {
   List<Suggestion> autoCompleteName(String query);
+
   List<Suggestion> autoCompleteName(String query, AutoCompleteOptions options);
 }
-
